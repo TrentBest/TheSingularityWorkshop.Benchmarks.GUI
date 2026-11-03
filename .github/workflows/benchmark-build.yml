@@ -1,0 +1,32 @@
+name: Benchmark harness build
+
+on:
+  push:
+    branches: [development]
+  pull_request:
+    branches: [development]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out benchmark repository
+        uses: actions/checkout@v4
+      - name: Check out GUI source development branch
+        uses: actions/checkout@v4
+        with:
+          repository: TrentBest/TheSingularityWorkshop.GUI
+          ref: development
+          path: TheSingularityWorkshop.GUI
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build WPF benchmark harness
+        run: dotnet build src/WpfBench/TheSingularityWorkshop.Benchmarks.GUI.WpfBench.csproj --configuration Release
+      - name: Build Blazor render-tree benchmark harness
+        run: dotnet build src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release
