@@ -29,22 +29,24 @@ public class WpfAdapterBenchmarks
 
     private static FrameworkElement BuildNativeTree(int sections)
     {
-        var root = new StackPanel { Orientation = Orientation.Vertical, Margin = new Thickness(8), IsEnabled = true };
-        root.Children.Add(new TextBlock { Text = "Workshop dashboard" });
+        var root = new StackPanel { Name = "dashboard", Orientation = Orientation.Vertical, Margin = new Thickness(8), IsEnabled = true };
+        root.Children.Add(new TextBlock { Name = "dashboardheading", Text = "Workshop dashboard" });
 
         for (var section = 0; section < sections; section++)
         {
-            var panel = new Grid();
-            panel.Children.Add(new TextBlock { Text = $"Section {section + 1}" });
+            var panel = new Grid { Name = $"section{section}" };
+            panel.Children.Add(new TextBlock { Name = $"section{section}heading", Text = $"Section {section + 1}" });
             panel.Children.Add(new TextBox
             {
+                Name = $"section{section}name",
                 Text = $"Value {section + 1}",
                 Width = 240,
                 Margin = new Thickness(4)
             });
-            panel.Children.Add(new Button { Content = "Save", IsEnabled = true, Margin = new Thickness(4) });
+            panel.Children.Add(new Button { Name = $"section{section}save", Content = "Save", IsEnabled = true, Margin = new Thickness(4) });
             panel.Children.Add(new Border
             {
+                Name = $"section{section}notice",
                 Child = new TextBlock { Text = "Changes are saved locally.", TextWrapping = TextWrapping.Wrap },
                 Padding = new Thickness(8)
             });
