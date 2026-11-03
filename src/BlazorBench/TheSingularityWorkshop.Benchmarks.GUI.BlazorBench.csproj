@@ -8,7 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
-    <ProjectReference Include="../../../TheSingularityWorkshop.GUI/src/Core/TheSingularityWorkshop.GUI.Core.csproj" />
-    <ProjectReference Include="../../../TheSingularityWorkshop.GUI/src/Blazor/TheSingularityWorkshop.GUI.Blazor.csproj" />
+    <ProjectReference Include="../../TheSingularityWorkshop.GUI/src/Core/TheSingularityWorkshop.GUI.Core.csproj" />
+    <ProjectReference Include="../../TheSingularityWorkshop.GUI/src/Blazor/TheSingularityWorkshop.GUI.Blazor.csproj" />
   </ItemGroup>
 </Project>
