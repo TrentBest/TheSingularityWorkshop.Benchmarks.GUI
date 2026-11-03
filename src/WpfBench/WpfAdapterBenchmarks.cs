@@ -1,6 +1,7 @@
 using BenchmarkDotNet.Attributes;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using TheSingularityWorkshop.GUI.WPF;
 using TheSingularityWorkshop.Workshop.Gui;
 
@@ -29,28 +30,43 @@ public class WpfAdapterBenchmarks
 
     private static FrameworkElement BuildNativeTree(int sections)
     {
-        var root = new StackPanel { Name = "dashboard", Orientation = Orientation.Vertical, Margin = new Thickness(8), IsEnabled = true };
-        root.Children.Add(new TextBlock { Name = "dashboardheading", Text = "Workshop dashboard" });
+        var root = new StackPanel { Name = "dashboard", Orientation = Orientation.Vertical };
+        root.Children.Add(new TextBlock { Name = "dashboardHeading", Text = "Workshop dashboard", TextWrapping = TextWrapping.Wrap });
 
         for (var section = 0; section < sections; section++)
         {
-            var panel = new Grid { Name = $"section{section}" };
-            panel.Children.Add(new TextBlock { Name = $"section{section}heading", Text = $"Section {section + 1}" });
-            panel.Children.Add(new TextBox
+            var sectionContent = new StackPanel { Orientation = Orientation.Vertical };
+            sectionContent.Children.Add(new TextBlock
             {
-                Name = $"section{section}name",
-                Text = $"Value {section + 1}",
-                Width = 240,
-                Margin = new Thickness(4)
+                Name = $"section{section}Heading",
+                Text = $"Section {section + 1}",
+                TextWrapping = TextWrapping.Wrap
             });
-            panel.Children.Add(new Button { Name = $"section{section}save", Content = "Save", IsEnabled = true, Margin = new Thickness(4) });
-            panel.Children.Add(new Border
+            sectionContent.Children.Add(new Button
             {
-                Name = $"section{section}notice",
-                Child = new TextBlock { Text = "Changes are saved locally.", TextWrapping = TextWrapping.Wrap },
-                Padding = new Thickness(8)
+                Name = $"section{section}Save",
+                Content = "Save"
             });
-            root.Children.Add(panel);
+            sectionContent.Children.Add(new Border
+            {
+                Name = $"section{section}Notice",
+                Background = new SolidColorBrush(Color.FromRgb(0x3A, 0x1B, 0x08)),
+                BorderBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xA0, 0x30)),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(12),
+                Child = new TextBlock
+                {
+                    Text = "Changes are saved locally.",
+                    Foreground = new SolidColorBrush(Color.FromRgb(0xFF, 0xD0, 0x90)),
+                    TextWrapping = TextWrapping.Wrap
+                }
+            });
+
+            root.Children.Add(new Border
+            {
+                Name = $"section{section}",
+                Child = sectionContent
+            });
         }
 
         return root;
