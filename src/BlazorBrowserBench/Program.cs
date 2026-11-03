@@ -13,6 +13,7 @@ internal static class Program
     private static async Task Main(string[] args)
     {
         var app = WebApplication.CreateBuilder(args).Build();
+        app.Urls.Add(Address);
         app.MapGet("/{kind}", async (string kind, IServiceProvider services, ILoggerFactory loggerFactory) =>
         {
             if (kind is not ("gui" or "native"))
