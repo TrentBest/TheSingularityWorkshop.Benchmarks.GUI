@@ -51,10 +51,16 @@ internal static class Program
     {
         using var playwright = await Playwright.CreateAsync();
         await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions { Headless = true });
+        const int samplesPerImplementation = 30;
         var results = new List<Measurement>();
-        foreach (var kind in new[] { "native", "gui" })
+        for (var sample = 0; sample < samplesPerImplementation; sample++)
         {
-            for (var sample = 0; sample < 15; sample++)
+            // Alternate the paired order to reduce fixed native-first/GUI-first bias.
+            var order = sample % 2 == 0
+                ? new[] { "native", "gui" }
+                : new[] { "gui", "native" };
+
+            foreach (var kind in order)
             {
                 var page = await browser.NewPageAsync(new BrowserNewPageOptions
                 {
@@ -91,10 +97,16 @@ internal static class Program
             }
         }
 
-        Console.WriteLine("kind,sample,ttfb_ms,dom_content_loaded_ms,load_ms,layout_width,layout_height");
+        var outputDirectory = Path.Combine("results", "browser");
+        Directory.CreateDirectory(outputDirectory);
+        var outputPath = Path.Combine(outputDirectory, "blazor-browser.csv");
+        var csv = new StringBuilder();
+        csv.AppendLine("kind,sample,ttfb_ms,dom_content_loaded_ms,load_ms,layout_width,layout_height");
         foreach (var item in results)
-            Console.WriteLine($"{item.Kind},{item.Sample},{item.Ttfb:F3},{item.DomContentLoaded:F3},{item.Load:F3},{item.LayoutWidth:F1},{item.LayoutHeight:F1}");
-        Console.WriteLine("Note: browser timing includes loopback HTTP + server-side static HTML rendering; it is not Blazor interactive/WASM startup or physical paint latency.");
+            csv.AppendLine($"{item.Kind},{item.Sample},{item.Ttfb:F3},{item.DomContentLoaded:F3},{item.Load:F3},{item.LayoutWidth:F1},{item.LayoutHeight:F1}");
+        await File.WriteAllTextAsync(outputPath, csv.ToString(), new System.Text.UTF8Encoding(false));
+        Console.WriteLine($"Browser comparison samples written: {outputPath} ({samplesPerImplementation} per implementation; paired alternating order).");
+        Console.WriteLine("Scope: loopback HTTP + server-side static HTML rendering + browser parsing/layout; not interactive Blazor startup, event latency, or physical paint.");
     }
 
     private sealed record Measurement(string Kind, int Sample, double Ttfb, double DomContentLoaded, double Load, double LayoutWidth, double LayoutHeight);
