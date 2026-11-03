@@ -38,6 +38,10 @@ internal static class WpfLifecycleMeasurements
         {
             foreach (var implementation in new[] { "native", "gui" })
             {
+                // Exclude initial JIT/type initialization from the reported sample set.
+                for (var warmup = 0; warmup < 3; warmup++)
+                    _ = Measure(implementation == "gui", sections);
+
                 for (var sample = 1; sample <= SamplesPerCase; sample++)
                 {
                     var result = Measure(implementation == "gui", sections);
@@ -57,7 +61,7 @@ internal static class WpfLifecycleMeasurements
 
         File.WriteAllText(outputPath, string.Join(Environment.NewLine, rows) + Environment.NewLine, new UTF8Encoding(false));
         Console.WriteLine($"WPF lifecycle samples: {outputPath}");
-        Console.WriteLine($"Samples per implementation/workload: {SamplesPerCase}; window visible: false; thread: {Thread.CurrentThread.GetApartmentState()}");
+        Console.WriteLine($"Warmups per implementation/workload: 3; measured samples: {SamplesPerCase}; window visible: false; thread: {Thread.CurrentThread.GetApartmentState()}");
         Console.WriteLine(string.Join(Environment.NewLine, rows));
         return 0;
     }
