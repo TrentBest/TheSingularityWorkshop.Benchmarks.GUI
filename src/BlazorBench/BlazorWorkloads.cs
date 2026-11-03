@@ -20,8 +20,7 @@ internal static class BlazorWorkloads
                 new(GuiKinds.Text, $"section-{section}-heading", $"Section {section + 1}"),
                 new(GuiKinds.TextBox, $"section-{section}-name", $"Name {section + 1}",
                     properties: new Dictionary<string, string> { ["value"] = $"Value {section + 1}" }),
-                new(GuiKinds.Button, $"section-{section}-save", "Save",
-                    properties: new Dictionary<string, string> { ["disabled"] = "false" }),
+                new(GuiKinds.Button, $"section-{section}-save", "Save"),
                 new(GuiKinds.Warning, $"section-{section}-notice", "Changes are saved locally.")
             };
             children.Add(new GuiNode(GuiKinds.Panel, $"section-{section}", children: controls));
@@ -55,7 +54,6 @@ internal static class BlazorWorkloads
 
             builder.OpenElement(14, "button");
             builder.AddAttribute(15, "id", $"section-{section}-save");
-            builder.AddAttribute(16, "disabled", false);
             builder.AddContent(17, "Save");
             builder.CloseElement();
 
