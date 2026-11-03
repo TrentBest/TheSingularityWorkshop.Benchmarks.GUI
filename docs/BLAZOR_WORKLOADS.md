@@ -2,7 +2,7 @@
 
 ## Scope
 
-The first executable Blazor suite measures .NET render-tree construction. It invokes the GUI.Blazor RenderFragment and a native RenderFragment into fresh RenderTreeBuilder instances for the same defined workload sizes.
+The first executable Blazor suite measures .NET render-tree construction for the current verified development-branch semantic vocabulary (Panel, Text, Button, and Warning). It invokes the GUI.Blazor RenderFragment and a native RenderFragment into fresh RenderTreeBuilder instances for the same defined workload sizes.
 
 This is not browser-visible rendering, first-interactive latency, layout, paint, network/server latency, WebAssembly startup, or interaction latency. Browser automation remains a required later milestone before making end-user Blazor performance claims.
 
@@ -14,11 +14,11 @@ This is not browser-visible rendering, first-interactive latency, layout, paint,
 | Root nodes | 1 | 1 | 1 |
 | Dashboard heading | 1 | 1 | 1 |
 | Section panels | 2 | 6 | 18 |
-| Controls per section | 4 | 4 | 4 |
-| Total semantic nodes | 12 | 32 | 92 |
+| Controls per section | 3 | 3 | 3 |
+| Total semantic nodes | 10 | 26 | 74 |
 | Maximum tree depth | 3 | 3 | 3 |
 
-Each section contains a heading, input, button, and notice. The root is a vertical flex container with a dashboard heading. Native and semantic versions emit matching HTML element types, IDs, visible text, values, and defined attributes.
+Each section contains a heading, button, and notice. The root is a Panel containing a dashboard heading and section panels. Native and semantic versions emit matching HTML element types, IDs, and visible text.
 
 ## Measurement boundary
 
