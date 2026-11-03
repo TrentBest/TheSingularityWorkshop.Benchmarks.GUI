@@ -1,7 +1,5 @@
 # The Singularity Workshop — GUI Benchmarks
 
-[![Build](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/ci.yml/badge.svg)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/ci.yml)
-
 This repository establishes reproducible performance evidence for the GUI adapters developers actually use.
 
 ## First priority: adapter experience
