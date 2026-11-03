@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Threading;
 using TheSingularityWorkshop.GUI.WPF;
 using TheSingularityWorkshop.Workshop.Gui;
