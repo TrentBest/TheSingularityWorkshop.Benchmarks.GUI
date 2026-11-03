@@ -36,6 +36,15 @@ jobs:
         run: dotnet build src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release
       - name: Measure WPF adapter construction
         run: dotnet run --project src/WpfBench/TheSingularityWorkshop.Benchmarks.GUI.WpfBench.csproj --configuration Release --no-build -- --filter "*WpfAdapterBenchmarks*"
+      - name: Build browser-hosted Blazor comparison
+        run: dotnet build src/BlazorBrowserBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBrowserBench.csproj --configuration Release
+      - name: Install Playwright Chromium
+        run: pwsh src/BlazorBrowserBench/bin/Release/net8.0/playwright.ps1 install chromium
+      - name: Capture browser comparison
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path results/browser | Out-Null
+          dotnet run --project src/BlazorBrowserBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBrowserBench.csproj --configuration Release --no-build | Tee-Object results/browser/blazor-browser.csv
       - name: Measure Blazor render-tree construction
         run: dotnet run --project src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release --no-build -- --filter "*BlazorRenderTreeBenchmarks*"
       - name: Upload measured results and environment
@@ -46,5 +55,6 @@ jobs:
           path: |
             BenchmarkDotNet.Artifacts/**
             results/environment/**
+            results/browser/**
           if-no-files-found: warn
           retention-days: 90
