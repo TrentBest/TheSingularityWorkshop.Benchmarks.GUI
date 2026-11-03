@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Threading;
 using TheSingularityWorkshop.GUI.WPF;
 using TheSingularityWorkshop.Workshop.Gui;
@@ -110,14 +109,14 @@ internal static class WpfLifecycleMeasurements
 
         var update = Time(() =>
         {
-            var heading = FindById<TextBlock>(content!, "dashboardHeading");
+            var heading = GetHeading(content!);
             heading.Text = "Workshop dashboard updated";
             content!.UpdateLayout();
         });
 
         var commandDispatch = Time(() =>
         {
-            var button = FindById<Button>(content!, "section0Save");
+            var button = GetFirstSaveButton(content!);
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         });
 
@@ -145,27 +144,32 @@ internal static class WpfLifecycleMeasurements
     private static string Format(TimeSpan value) =>
         value.TotalMilliseconds.ToString("F6", CultureInfo.InvariantCulture);
 
-    private static T FindById<T>(DependencyObject root, string id) where T : FrameworkElement
+    private static StackPanel GetRootPanel(FrameworkElement content) =>
+        content as StackPanel
+        ?? throw new InvalidOperationException("The matched WPF workload root must be a StackPanel.");
+
+    private static TextBlock GetHeading(FrameworkElement content)
     {
-        if (root is T candidate && string.Equals(GetId(candidate), id, StringComparison.Ordinal))
-            return candidate;
-
-        // Logical traversal works before a Window is shown and its visual templates are realized.
-        foreach (var child in LogicalTreeHelper.GetChildren(root))
-        {
-            if (child is not DependencyObject dependency)
-                continue;
-
-            var found = FindById<T>(dependency, id);
-            if (found is not null)
-                return found;
-        }
-
-        throw new InvalidOperationException($"Could not find WPF element '{id}'.");
+        var root = GetRootPanel(content);
+        return root.Children.Count > 0 && root.Children[0] is TextBlock heading
+            ? heading
+            : throw new InvalidOperationException("The matched WPF workload is missing its dashboard heading.");
     }
 
-    private static string? GetId(FrameworkElement element) =>
-        element.GetValue(WpfGuiIdentity.NodeIdProperty) as string ?? element.Name;
+    private static Button GetFirstSaveButton(FrameworkElement content)
+    {
+        var root = GetRootPanel(content);
+        if (root.Children.Count < 2
+            || root.Children[1] is not Border section
+            || section.Child is not StackPanel sectionContent
+            || sectionContent.Children.Count < 2
+            || sectionContent.Children[1] is not Button button)
+        {
+            throw new InvalidOperationException("The matched WPF workload is missing the first section's Save button.");
+        }
+
+        return button;
+    }
 
     private static GuiNode CreateSemanticTree(int sections)
     {
