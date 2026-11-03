@@ -8,37 +8,20 @@ internal static class GuiWorkloads
     {
         var children = new List<GuiNode>
         {
-            Node(GuiKinds.Text, "dashboard-heading", "Workshop dashboard")
+            new("Text", "dashboardHeading", "Workshop dashboard")
         };
+
         for (var section = 0; section < sections; section++)
         {
             var controls = new List<GuiNode>
             {
-                Node(GuiKinds.Text, $"section-{section}-heading", $"Section {section + 1}"),
-                Node(GuiKinds.TextBox, $"section-{section}-name", $"Name {section + 1}",
-                    new Dictionary<string, string> { ["value"] = $"Value {section + 1}", ["width"] = "240" }),
-                Node(GuiKinds.Button, $"section-{section}-save", "Save",
-                    new Dictionary<string, string> { ["isEnabled"] = "true", ["margin"] = "4" }),
-                Node(GuiKinds.Warning, $"section-{section}-notice", "Changes are saved locally.")
+                new("Text", $"section{section}Heading", $"Section {section + 1}"),
+                new("Button", $"section{section}Save", "Save"),
+                new("Warning", $"section{section}Notice", "Changes are saved locally.")
             };
-            children.Add(new GuiNode(GuiKinds.Panel, $"section-{section}", children: controls));
+            children.Add(new GuiNode("Panel", $"section{section}", children: controls));
         }
 
-        return new GuiNode(GuiKinds.Stack, "dashboard",
-            text: "Workshop dashboard",
-            properties: new Dictionary<string, string>
-            {
-                ["orientation"] = "Vertical",
-                ["margin"] = "8",
-                ["isEnabled"] = "true"
-            },
-            children: children);
+        return new GuiNode("Column", "dashboard", children: children);
     }
-
-    private static GuiNode Node(
-        string kind,
-        string id,
-        string? text = null,
-        IReadOnlyDictionary<string, string>? properties = null) =>
-        new(kind, id, text, properties: properties);
 }
