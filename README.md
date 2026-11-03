@@ -47,6 +47,8 @@ No package publication is part of benchmark development. NuGet publication requi
 
 ## Current status
 
-**WPF and Blazor render-tree benchmark harnesses are now scaffolded**, with small/medium/large workload definitions and a Windows CI build. The first CI build is pending. Browser-visible Blazor measurements, WPF visible-host lifecycle measurements, and measured baselines are still outstanding. No performance conclusion should be drawn until reproducible runs and raw artifacts are available.
+**Both WPF and Blazor render-tree harnesses build and pass BenchmarkDotNet Dry smoke runs on Windows CI.** The workflow also uploads the smoke-run artifacts for inspection. These Dry jobs verify that the benchmark cases execute; their timings are not performance evidence and must not be reported as baselines.
+
+The next evidence milestone is a measured run with raw results and environment metadata. Browser-visible Blazor measurements and WPF visible-host lifecycle measurements remain outstanding. No performance conclusion should be drawn from the current smoke tests.
 
 Tracking: [Issue #1 — Establish user-facing WPF and Blazor performance baselines](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/issues/1).
