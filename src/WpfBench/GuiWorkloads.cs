@@ -6,7 +6,10 @@ internal static class GuiWorkloads
 {
     public static GuiNode CreateSemanticTree(int sections)
     {
-        var children = new List<GuiNode>();
+        var children = new List<GuiNode>
+        {
+            Node(GuiKinds.Text, "dashboard-heading", "Workshop dashboard")
+        };
         for (var section = 0; section < sections; section++)
         {
             var controls = new List<GuiNode>
