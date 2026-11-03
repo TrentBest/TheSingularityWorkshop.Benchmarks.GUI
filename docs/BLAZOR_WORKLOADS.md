@@ -22,6 +22,6 @@ Each section contains a heading, button, and notice. The root is a Panel contain
 
 ## Measurement boundary
 
-The benchmark includes fresh RenderTreeBuilder allocation and invocation of the fragment. Fragment creation and semantic-tree creation are in GlobalSetup and are excluded from the timed operation. Both paths use the same runtime and builder type.
+The benchmark includes the complete adapter entry operation, fresh RenderTreeBuilder allocation, and fragment invocation. Semantic-tree creation is in GlobalSetup and excluded. The native fragment is created within its timed method so both paths include fragment creation; the GUI path also includes the adapter's tree validation. Both paths use the same runtime and builder type.
 
 Results must be labeled **.NET render-tree construction**. A separate browser-hosted comparison must measure first meaningful render and action-to-visible-completion in a real browser before the project can claim browser-visible Blazor performance.
