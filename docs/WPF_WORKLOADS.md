@@ -13,15 +13,15 @@ It does not yet measure process startup, window attachment, dispatcher/layout co
 | Sections | 2 | 6 | 18 |
 | Root nodes | 1 | 1 | 1 |
 | Section panels | 2 | 6 | 18 |
-| Controls per section | 4 | 4 | 4 |
-| Total semantic nodes | 12 | 32 | 92 |
+| Controls per section | 3 | 3 | 3 |
+| Total semantic nodes | 10 | 26 | 74 |
 | Maximum tree depth | 3 | 3 | 3 |
 
-Each section contains a heading, a text box with a value and width, a save button with enabled/margin properties, and a warning message. The root contains a dashboard heading child and vertical orientation/margin/enabled properties.
+Each section contains a heading, a save button, and a warning message. The root is a vertical Column containing the dashboard heading and section panels.
 
 ## Equivalence notes
 
-The semantic and native paths create the same visible content and corresponding WPF element types for the represented subset: StackPanel, Grid, TextBlock, TextBox, Button, and Border/TextBlock warning. WPF's semantic renderer currently maps Warning to a Border containing a TextBlock.
+The semantic and native paths create the same visible content and corresponding WPF element types for the verified development-branch subset: StackPanel, Border/StackPanel section panels, TextBlock, Button, and styled Border/TextBlock warnings. WPF's semantic renderer currently maps Warning to a Border containing a TextBlock.
 
 This initial harness compares construction only. It returns the root element to prevent the operation from being reduced to a discarded call, but it does not attach it to a Window or force layout.
 
