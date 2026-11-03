@@ -49,6 +49,6 @@ No package publication is part of benchmark development. NuGet publication requi
 
 **Both WPF and Blazor render-tree harnesses build and pass BenchmarkDotNet Dry smoke runs on Windows CI.** The workflow also uploads the smoke-run artifacts for inspection. These Dry jobs verify that the benchmark cases execute; their timings are not performance evidence and must not be reported as baselines.
 
-The next evidence milestone is a measured run with raw results and environment metadata. Browser-visible Blazor measurements and WPF visible-host lifecycle measurements remain outstanding. No performance conclusion should be drawn from the current smoke tests.
+The next evidence milestone is a measured run with raw results and environment metadata. The next implementation milestone is a browser-hosted GUI/native Blazor comparison and a WPF window/dispatcher lifecycle harness. The current Blazor renderer does not wire event callbacks, so its first browser comparison must remain a static-rendering comparison; interaction latency is out of scope until the adapter exposes a tested interaction contract. Hosted Windows CI can validate WPF window attachment and layout, but visible paint/input claims still require a demonstrably interactive desktop. No performance conclusion should be drawn from the current smoke tests.
 
 Tracking: [Issue #1 — Establish user-facing WPF and Blazor performance baselines](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/issues/1).
