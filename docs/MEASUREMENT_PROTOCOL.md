@@ -101,11 +101,15 @@ The benchmark report must state what was measured, what was excluded, and what c
 
 ## 7. Current implementation boundary
 
-The GUI repository currently documents GUI.Core as implemented, GUI.Blazor as implemented/partial, and GUI.WPF as implemented/partial. In particular, WPF's dedicated test project and cross-adapter conformance suite are not yet established. The current semantic vocabulary is limited; the workload must stay within that verified subset.
+The benchmark consumes the GUI repository's `development` branch. The source audit for the current benchmark revision confirms that both `tests/WPF.Tests` and `tests/Blazor.Tests` exist, alongside `tests/Adapter.Conformance.Tests`. Test-project existence is not proof that every adapter capability is complete; benchmark workloads must still stay within the exact behavior exercised by the selected source and conformance tests.
 
-The benchmark project must not imply that incomplete input, accessibility, capability-negotiation, or lifecycle contracts are covered.
+The current `BlazorGuiRenderer` maps semantic kinds to HTML elements and emits node identity, source, string properties, text, and child elements. Its current implementation does not attach Blazor event callbacks to rendered controls. Therefore the initial browser comparison must measure equivalent static rendering and only add interaction scenarios after an explicitly supported, tested interaction contract exists. Do not label a synthetic browser click on a non-functional adapter button as an adapter interaction benchmark.
 
-The initial executable WPF suite currently measures warm control-tree construction only. The initial executable Blazor suite currently measures .NET render-tree construction only. Neither suite yet measures visible-host lifecycle behavior or browser-visible experience. See WPF_WORKLOADS.md and BLAZOR_WORKLOADS.md for the exact workload and boundary definitions.
+The current `WpfGuiRenderer` manifests semantic nodes as WPF controls. `WpfWindowBuilder` builds a host window but deliberately does not show it or take ownership of its lifetime. The host/lifecycle harness must own showing, dispatcher synchronization, closing, and cleanup, and must compare the same content and host configuration for the native WPF case.
+
+The initial executable WPF suite measures warm control-tree construction only. The initial executable Blazor suite measures .NET render-tree construction only. Neither suite yet measures visible-host lifecycle behavior or browser-visible experience. The next harnesses must add these as distinct measurement layers rather than relabeling existing microbenchmarks. See WPF_WORKLOADS.md and BLAZOR_WORKLOADS.md for the exact workload and boundary definitions.
+
+The benchmark project must not imply that incomplete input, accessibility, capability-negotiation, event wiring, or lifecycle contracts are covered.
 
 ## 8. Deferred Core suite
 
