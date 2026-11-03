@@ -5,7 +5,7 @@
 The executable suite now has two explicitly separate layers:
 
 1. **Warm construction** — WpfGuiRenderer.Render(GuiNode) versus direct native WPF construction, measured by BenchmarkDotNet.
-2. **STA host/lifecycle sample** — semantic/native tree construction, assignment to an equivalent WPF Window host, explicit Measure/Arrange/UpdateLayout plus an ApplicationIdle dispatcher drain, a content update, a synthetic routed Button.Click dispatch, and teardown. The lifecycle harness runs 15 samples for each implementation at each workload size and writes raw per-sample CSV to results/wpf/wpf-lifecycle.csv.
+2. **STA host/lifecycle sample** — semantic/native tree construction, assignment to an equivalent WPF Window host, explicit Measure/Arrange/UpdateLayout plus an ApplicationIdle dispatcher drain, a content update, a synthetic routed Button.Click dispatch, and teardown. The lifecycle harness runs three warmups followed by 15 measured samples for each implementation at each workload size and writes raw per-sample CSV to results/wpf/wpf-lifecycle.csv.
 
 The lifecycle harness does not call Window.Show and does not use physical input. It measures host content attachment and explicit layout work, not visible presentation, compositor paint, real user input, or end-to-end application startup. The synthetic click measures WPF routed-command dispatch only.
 
