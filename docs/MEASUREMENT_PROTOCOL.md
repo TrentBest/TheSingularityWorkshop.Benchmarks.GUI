@@ -101,6 +101,8 @@ The GUI repository currently documents GUI.Core as implemented, GUI.Blazor as im
 
 The benchmark project must not imply that incomplete input, accessibility, capability-negotiation, or lifecycle contracts are covered.
 
+The initial executable WPF suite currently measures warm control-tree construction only. The initial executable Blazor suite currently measures .NET render-tree construction only. Neither suite yet measures visible-host lifecycle behavior or browser-visible experience. See WPF_WORKLOADS.md and BLAZOR_WORKLOADS.md for the exact workload and boundary definitions.
+
 ## 8. Deferred Core suite
 
 Only after the adapter baselines are reproducible should the suite add internal measurements for:
