@@ -113,6 +113,9 @@ internal static class WpfLifecycleMeasurements
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         });
 
+        if (dispatched != 1)
+            throw new InvalidOperationException($"Expected exactly one command dispatch, observed {dispatched}.");
+
         var teardown = Time(() =>
         {
             window!.Content = null;
