@@ -42,8 +42,16 @@ internal static class WpfLifecycleMeasurements
                 // Exclude initial JIT/type initialization from the reported sample set.
                 for (var warmup = 0; warmup < 3; warmup++)
                     _ = Measure(implementation == "gui", sections);
+            }
 
-                for (var sample = 1; sample <= SamplesPerCase; sample++)
+            // Alternate paired order to reduce a fixed native-first or GUI-first bias.
+            for (var sample = 1; sample <= SamplesPerCase; sample++)
+            {
+                var order = sample % 2 == 1
+                    ? new[] { "native", "gui" }
+                    : new[] { "gui", "native" };
+
+                foreach (var implementation in order)
                 {
                     var result = Measure(implementation == "gui", sections);
                     rows.Add(string.Join(",",
