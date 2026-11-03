@@ -50,6 +50,8 @@ Measure separately:
 
 WPF measurements must run on Windows in an STA-capable process. Record Windows version, CPU, .NET runtime, display/DPI configuration, build mode, and whether a visible desktop session was used.
 
+**Runner constraint:** a hosted Windows CI process may run in a non-interactive session. It can validate WPF construction, dispatcher/layout completion, and harness correctness, but it must not be described as a visible-desktop paint/input benchmark unless the runner is demonstrably attached to an interactive desktop with a recorded display configuration. Keep interactive WPF UX measurements as a separately labeled local/desktop run until an interactive runner is deliberately provisioned. Do not add a self-hosted runner requirement or expose a machine to the repository without an explicit security review.
+
 BenchmarkDotNet is appropriate for isolated warm in-process operations when its process/affinity model is compatible with WPF. Use a separate harness for process startup and visible UI interaction. Never combine those boundaries into one unexplained number.
 
 ## 4. Blazor protocol
@@ -73,6 +75,8 @@ Host the GUI and native versions in the same application, hosting mode, runtime,
 - browser memory where reliable and comparable.
 
 Record Blazor hosting mode (for example, WebAssembly or server/interactive server), .NET runtime, browser and version, OS, CPU, viewport, device scale factor, and automation/instrumentation versions.
+
+The browser harness should serve GUI and native pages from the same host build and use the same Playwright browser context, viewport, device scale factor, and scripted action sequence. Capture browser traces and page performance entries alongside the .NET-side measurements. If server hosting is used, capture server-side request/render timing separately from browser action-to-visible-completion; do not collapse them into a single unexplained latency.
 
 Do not attribute browser layout, paint, network, or server latency to GUI.Core. Record them as separate boundaries when instrumentation permits.
 
