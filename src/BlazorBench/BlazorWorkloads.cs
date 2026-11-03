@@ -28,7 +28,7 @@ internal static class BlazorWorkloads
         }
 
         return new GuiNode(GuiKinds.Stack, "dashboard",
-            properties: new Dictionary<string, string> { ["style:margin"] = "8px", ["style:display"] = "flex" },
+            properties: new Dictionary<string, string> { ["style:margin"] = "8px" },
             children: children);
     }
 
@@ -45,24 +45,24 @@ internal static class BlazorWorkloads
         var sequence = 6;
         for (var section = 0; section < sections; section++)
         {
-            builder.OpenElement(sequence++, "div");
-            builder.AddAttribute(sequence++, "id", $"section-{section}");
+            builder.OpenElement(6, "div");
+            builder.AddAttribute(7, "id", $"section-{section}");
 
-            AddText(builder, ref sequence, $"section-{section}-heading", $"Section {section + 1}");
-            builder.OpenElement(sequence++, "input");
-            builder.AddAttribute(sequence++, "id", $"section-{section}-name");
-            builder.AddAttribute(sequence++, "value", $"Value {section + 1}");
+            AddText(builder, $"section-{section}-heading", $"Section {section + 1}");
+            builder.OpenElement(11, "input");
+            builder.AddAttribute(12, "id", $"section-{section}-name");
+            builder.AddAttribute(13, "value", $"Value {section + 1}");
             builder.CloseElement();
 
-            builder.OpenElement(sequence++, "button");
-            builder.AddAttribute(sequence++, "id", $"section-{section}-save");
-            builder.AddAttribute(sequence++, "disabled", false);
-            builder.AddContent(sequence++, "Save");
+            builder.OpenElement(14, "button");
+            builder.AddAttribute(15, "id", $"section-{section}-save");
+            builder.AddAttribute(16, "disabled", false);
+            builder.AddContent(17, "Save");
             builder.CloseElement();
 
-            builder.OpenElement(sequence++, "aside");
-            builder.AddAttribute(sequence++, "id", $"section-{section}-notice");
-            builder.AddContent(sequence++, "Changes are saved locally.");
+            builder.OpenElement(18, "aside");
+            builder.AddAttribute(19, "id", $"section-{section}-notice");
+            builder.AddContent(20, "Changes are saved locally.");
             builder.CloseElement();
             builder.CloseElement();
         }
@@ -70,11 +70,11 @@ internal static class BlazorWorkloads
         builder.CloseElement();
     };
 
-    private static void AddText(RenderTreeBuilder builder, ref int sequence, string id, string value)
+    private static void AddText(RenderTreeBuilder builder, string id, string value)
     {
-        builder.OpenElement(sequence++, "span");
-        builder.AddAttribute(sequence++, "id", id);
-        builder.AddContent(sequence++, value);
+        builder.OpenElement(8, "span");
+        builder.AddAttribute(9, "id", id);
+        builder.AddContent(10, value);
         builder.CloseElement();
     }
 }
