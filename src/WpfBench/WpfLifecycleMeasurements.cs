@@ -142,9 +142,13 @@ internal static class WpfLifecycleMeasurements
         if (root is T candidate && string.Equals(GetId(candidate), id, StringComparison.Ordinal))
             return candidate;
 
-        for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+        // Logical traversal works before a Window is shown and its visual templates are realized.
+        foreach (var child in LogicalTreeHelper.GetChildren(root))
         {
-            var found = FindById<T>(VisualTreeHelper.GetChild(root, index), id);
+            if (child is not DependencyObject dependency)
+                continue;
+
+            var found = FindById<T>(dependency, id);
             if (found is not null)
                 return found;
         }
