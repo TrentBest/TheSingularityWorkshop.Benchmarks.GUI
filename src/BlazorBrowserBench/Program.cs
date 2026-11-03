@@ -63,21 +63,23 @@ internal static class Program
                 {
                     await page.GotoAsync($"{Address}/{kind}", new PageGotoOptions { WaitUntil = WaitUntilState.Load });
                     await page.Locator("#dashboardHeading").WaitForAsync();
-                    var timing = await page.EvaluateAsync<Timing>("""() => {
-                        const nav = performance.getEntriesByType('navigation')[0];
-                        const root = document.querySelector('#dashboard');
-                        const rect = root.getBoundingClientRect();
-                        // Force style/layout calculation; this is not a physical-paint measurement.
-                        const settled = getComputedStyle(root).display;
-                        return {
-                            responseStart: nav.responseStart,
-                            domContentLoaded: nav.domContentLoadedEventEnd,
-                            load: nav.loadEventEnd,
-                            layoutWidth: rect.width,
-                            layoutHeight: rect.height,
-                            computedDisplay: settled
-                        };
-                    }""");
+                    var timing = await page.EvaluateAsync<Timing>("""
+                        () => {
+                            const nav = performance.getEntriesByType('navigation')[0];
+                            const root = document.querySelector('#dashboard');
+                            const rect = root.getBoundingClientRect();
+                            // Force style/layout calculation; this is not a physical-paint measurement.
+                            const settled = getComputedStyle(root).display;
+                            return {
+                                responseStart: nav.responseStart,
+                                domContentLoaded: nav.domContentLoadedEventEnd,
+                                load: nav.loadEventEnd,
+                                layoutWidth: rect.width,
+                                layoutHeight: rect.height,
+                                computedDisplay: settled
+                            };
+                        }
+                        """);
                     results.Add(new Measurement(kind, sample + 1, timing.ResponseStart, timing.DomContentLoaded, timing.Load, timing.LayoutWidth, timing.LayoutHeight));
                 }
                 finally
