@@ -107,7 +107,7 @@ The current `BlazorGuiRenderer` maps semantic kinds to HTML elements and emits n
 
 The current `WpfGuiRenderer` manifests semantic nodes as WPF controls. `WpfWindowBuilder` builds a host window but deliberately does not show it or take ownership of its lifetime. The host/lifecycle harness must own showing, dispatcher synchronization, closing, and cleanup, and must compare the same content and host configuration for the native WPF case.
 
-The initial executable WPF suite measures warm control-tree construction only. The initial executable Blazor suite measures .NET render-tree construction only. Neither suite yet measures visible-host lifecycle behavior or browser-visible experience. The next harnesses must add these as distinct measurement layers rather than relabeling existing microbenchmarks. See WPF_WORKLOADS.md and BLAZOR_WORKLOADS.md for the exact workload and boundary definitions.
+The WPF executable suite measures warm control-tree construction and a separate STA host/lifecycle path. The latter records tree construction, Window content attachment, explicit measure/arrange/layout and dispatcher drain, content update, synthetic routed-command dispatch, and teardown as separate per-sample phases. It uses an unshown Window and synthetic event; it does not measure visible paint, physical input, or user-perceived latency. The Blazor suite measures .NET render-tree construction plus a browser-hosted static HTML comparison. The browser harness does not yet measure interactive Blazor hosting or adapter event dispatch. See WPF_WORKLOADS.md and BLAZOR_WORKLOADS.md for exact boundaries.
 
 The benchmark project must not imply that incomplete input, accessibility, capability-negotiation, event wiring, or lifecycle contracts are covered.
 
