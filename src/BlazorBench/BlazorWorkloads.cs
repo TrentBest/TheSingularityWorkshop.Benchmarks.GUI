@@ -42,7 +42,6 @@ internal static class BlazorWorkloads
         builder.AddContent(5, "Workshop dashboard");
         builder.CloseElement();
 
-        var sequence = 6;
         for (var section = 0; section < sections; section++)
         {
             builder.OpenElement(6, "div");
