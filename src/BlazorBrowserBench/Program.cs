@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
@@ -64,7 +65,7 @@ internal static class Program
                 {
                     await page.GotoAsync($"{Address}/{kind}", new PageGotoOptions { WaitUntil = WaitUntilState.Load });
                     await page.Locator("#dashboardHeading").WaitForAsync();
-                    var timing = await page.EvaluateAsync<Timing>("""
+                    var timing = await page.EvaluateAsync<JsonElement>("""
                         () => {
                             const nav = performance.getEntriesByType('navigation')[0];
                             const root = document.querySelector('#dashboard');
@@ -81,7 +82,7 @@ internal static class Program
                             };
                         }
                         """);
-                    results.Add(new Measurement(kind, sample + 1, timing.ResponseStart, timing.DomContentLoaded, timing.Load, timing.LayoutWidth, timing.LayoutHeight));
+                    results.Add(new Measurement(kind, sample + 1, timing.GetProperty("responseStart").GetDouble(), timing.GetProperty("domContentLoaded").GetDouble(), timing.GetProperty("load").GetDouble(), timing.GetProperty("layoutWidth").GetDouble(), timing.GetProperty("layoutHeight").GetDouble()));
                 }
                 finally
                 {
@@ -96,7 +97,6 @@ internal static class Program
         Console.WriteLine("Note: browser timing includes loopback HTTP + server-side static HTML rendering; it is not Blazor interactive/WASM startup or physical paint latency.");
     }
 
-    private sealed record Timing(double ResponseStart, double DomContentLoaded, double Load, double LayoutWidth, double LayoutHeight);
     private sealed record Measurement(string Kind, int Sample, double Ttfb, double DomContentLoaded, double Load, double LayoutWidth, double LayoutHeight);
 
     public sealed class BenchmarkPage : ComponentBase
