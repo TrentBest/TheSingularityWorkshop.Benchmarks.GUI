@@ -10,68 +10,56 @@ internal static class BlazorWorkloads
     {
         var children = new List<GuiNode>
         {
-            new(GuiKinds.Text, "dashboard-heading", "Workshop dashboard")
+            new("Text", "dashboardHeading", "Workshop dashboard")
         };
 
         for (var section = 0; section < sections; section++)
         {
             var controls = new List<GuiNode>
             {
-                new(GuiKinds.Text, $"section-{section}-heading", $"Section {section + 1}"),
-                new(GuiKinds.TextBox, $"section-{section}-name", $"Name {section + 1}",
-                    properties: new Dictionary<string, string> { ["value"] = $"Value {section + 1}" }),
-                new(GuiKinds.Button, $"section-{section}-save", "Save"),
-                new(GuiKinds.Warning, $"section-{section}-notice", "Changes are saved locally.")
+                new("Text", $"section{section}Heading", $"Section {section + 1}"),
+                new("Button", $"section{section}Save", "Save"),
+                new("Warning", $"section{section}Notice", "Changes are saved locally.")
             };
-            children.Add(new GuiNode(GuiKinds.Panel, $"section-{section}", children: controls));
+            children.Add(new GuiNode("Panel", $"section{section}", children: controls));
         }
 
-        return new GuiNode(GuiKinds.Stack, "dashboard",
-            properties: new Dictionary<string, string> { ["style:margin"] = "8px" },
-            children: children);
+        return new GuiNode("Panel", "dashboard", children: children);
     }
 
     public static RenderFragment CreateNativeFragment(int sections) => builder =>
     {
         builder.OpenElement(0, "div");
         builder.AddAttribute(1, "id", "dashboard");
-        builder.AddAttribute(2, "style", "display:flex;flex-direction:column;margin:8px");
-        builder.OpenElement(3, "span");
-        builder.AddAttribute(4, "id", "dashboard-heading");
-        builder.AddContent(5, "Workshop dashboard");
+
+        builder.OpenElement(2, "span");
+        builder.AddAttribute(3, "id", "dashboardHeading");
+        builder.AddContent(4, "Workshop dashboard");
         builder.CloseElement();
 
         for (var section = 0; section < sections; section++)
         {
-            builder.OpenElement(6, "div");
-            builder.AddAttribute(7, "id", $"section-{section}");
+            builder.OpenElement(5, "div");
+            builder.AddAttribute(6, "id", $"section{section}");
 
-            AddText(builder, $"section-{section}-heading", $"Section {section + 1}");
-            builder.OpenElement(11, "input");
-            builder.AddAttribute(12, "id", $"section-{section}-name");
-            builder.AddAttribute(13, "value", $"Value {section + 1}");
+            builder.OpenElement(7, "span");
+            builder.AddAttribute(8, "id", $"section{section}Heading");
+            builder.AddContent(9, $"Section {section + 1}");
             builder.CloseElement();
 
-            builder.OpenElement(14, "button");
-            builder.AddAttribute(15, "id", $"section-{section}-save");
-            builder.AddContent(17, "Save");
+            builder.OpenElement(10, "button");
+            builder.AddAttribute(11, "id", $"section{section}Save");
+            builder.AddContent(12, "Save");
             builder.CloseElement();
 
-            builder.OpenElement(18, "aside");
-            builder.AddAttribute(19, "id", $"section-{section}-notice");
-            builder.AddContent(20, "Changes are saved locally.");
+            builder.OpenElement(13, "aside");
+            builder.AddAttribute(14, "id", $"section{section}Notice");
+            builder.AddContent(15, "Changes are saved locally.");
             builder.CloseElement();
+
             builder.CloseElement();
         }
 
         builder.CloseElement();
     };
-
-    private static void AddText(RenderTreeBuilder builder, string id, string value)
-    {
-        builder.OpenElement(8, "span");
-        builder.AddAttribute(9, "id", id);
-        builder.AddContent(10, value);
-        builder.CloseElement();
-    }
 }
