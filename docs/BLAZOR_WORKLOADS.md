@@ -15,7 +15,7 @@ This is not browser-visible rendering, first-interactive latency, layout, paint,
 | Dashboard heading | 1 | 1 | 1 |
 | Section panels | 2 | 6 | 18 |
 | Controls per section | 4 | 4 | 4 |
-| Total semantic nodes | 10 | 30 | 90 |
+| Total semantic nodes | 12 | 32 | 92 |
 | Maximum tree depth | 3 | 3 | 3 |
 
 Each section contains a heading, input, button, and notice. The root is a vertical flex container with a dashboard heading. Native and semantic versions emit matching HTML element types, IDs, visible text, values, and defined attributes.
