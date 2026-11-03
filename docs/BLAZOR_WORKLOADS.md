@@ -1,10 +1,13 @@
-# Blazor workload definition — v1
+# Blazor workload definition — v2
 
 ## Scope
 
-The first executable Blazor suite measures .NET render-tree construction for the current verified development-branch semantic vocabulary (Panel, Text, Button, and Warning). It invokes the GUI.Blazor RenderFragment and a native RenderFragment into fresh RenderTreeBuilder instances for the same defined workload sizes.
+The Blazor suite has two distinct measurement layers:
 
-This is not browser-visible rendering, first-interactive latency, layout, paint, network/server latency, WebAssembly startup, or interaction latency. Browser automation remains a required later milestone before making end-user Blazor performance claims.
+1. **.NET render-tree construction** — BenchmarkDotNet compares the GUI.Blazor RenderFragment with a native RenderFragment using fresh RenderTreeBuilder instances.
+2. **Browser-hosted static HTML comparison** — a small ASP.NET Core host renders the same GUI and native components to HTML using Blazor's HtmlRenderer. Playwright loads each response in Chromium and records browser navigation milestones plus a forced style/layout read.
+
+The browser harness currently exercises the large workload (18 sections, 74 semantic nodes) and collects 15 samples per implementation. It records TTFB, DOMContentLoaded, load completion, and resulting layout dimensions. The workflow captures the output as an artifact.
 
 ## Scenario matrix
 
@@ -18,10 +21,19 @@ This is not browser-visible rendering, first-interactive latency, layout, paint,
 | Total semantic nodes | 10 | 26 | 74 |
 | Maximum tree depth | 3 | 3 | 3 |
 
-Each section contains a heading, button, and notice. The root is a Panel containing a dashboard heading and section panels. Native and semantic versions emit matching HTML element types, IDs, and visible text.
+Each section contains a heading, button, and notice. The root is a Panel containing a dashboard heading and section panels. Native and semantic versions are intended to emit matching HTML element types, IDs, and visible text.
 
-## Measurement boundary
+## Measurement boundaries and limitations
 
-The benchmark includes the complete adapter entry operation, fresh RenderTreeBuilder allocation, and fragment invocation. Semantic-tree creation is in GlobalSetup and excluded. The native fragment is created within its timed method so both paths include fragment creation; the GUI path also includes the adapter's tree validation. Both paths use the same runtime and builder type.
+The .NET benchmark includes the adapter entry operation, fresh RenderTreeBuilder allocation, and fragment invocation. Semantic-tree creation is in GlobalSetup and excluded. Results must be labeled **.NET render-tree construction**.
 
-Results must be labeled **.NET render-tree construction**. A separate browser-hosted comparison must measure first meaningful render and action-to-visible-completion in a real browser before the project can claim browser-visible Blazor performance.
+The browser harness measures a loopback HTTP request whose response is server-rendered static HTML. Its timings include server-side HtmlRenderer work, HTTP response delivery, browser document parsing, and browser layout calculation. They are useful as an initial browser-visible delivery comparison, but they are **not** measurements of interactive Blazor Server/WebAssembly startup, component event dispatch, physical display paint, or user interaction latency. The layout read forces style/layout calculation but does not prove that pixels were physically presented.
+
+The current GUI.Blazor renderer does not wire event callbacks. Buttons are therefore static markup in this workload; no button interaction is simulated or reported. Browser measurements use Chromium headless at a 1280×800 viewport and device scale factor 1. The harness currently runs 15 samples per path; treat results as preliminary until repeated runs and variance analysis are available.
+
+## Next fidelity steps
+
+- Add small and medium browser scenarios, randomized or alternating implementation order, and warm-up samples.
+- Separate server render duration from network/browser navigation timings.
+- Add an interactive Blazor host only after the adapter's event contract is implemented and tested.
+- Use an interactive desktop/display-backed environment before reporting physical paint or input-to-presentation latency.
