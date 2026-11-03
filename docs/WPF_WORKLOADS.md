@@ -14,10 +14,10 @@ It does not yet measure process startup, window attachment, dispatcher/layout co
 | Root nodes | 1 | 1 | 1 |
 | Section panels | 2 | 6 | 18 |
 | Controls per section | 4 | 4 | 4 |
-| Total semantic nodes | 11 | 31 | 91 |
+| Total semantic nodes | 12 | 32 | 92 |
 | Maximum tree depth | 3 | 3 | 3 |
 
-Each section contains a heading, a text box with a value and width, a save button with enabled/margin properties, and a warning message. The root contains a dashboard heading and vertical orientation/margin/enabled properties.
+Each section contains a heading, a text box with a value and width, a save button with enabled/margin properties, and a warning message. The root contains a dashboard heading child and vertical orientation/margin/enabled properties.
 
 ## Equivalence notes
 
