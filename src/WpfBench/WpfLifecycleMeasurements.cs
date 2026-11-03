@@ -17,7 +17,7 @@ namespace TheSingularityWorkshop.Benchmarks.GUI.WpfBench;
 /// </summary>
 internal static class WpfLifecycleMeasurements
 {
-    private const int SamplesPerCase = 15;
+    private const int SamplesPerCase = 30;
     private static readonly Size HostSize = new(700, 500);
 
     public static int Run()
@@ -31,7 +31,7 @@ internal static class WpfLifecycleMeasurements
         var outputPath = Path.Combine(outputDirectory, "wpf-lifecycle.csv");
         var rows = new List<string>
         {
-            "implementation,sections,sample,construction_ms,attach_layout_ms,update_ms,command_dispatch_ms,teardown_ms,dispatched_commands"
+            "implementation,sections,sample,construction_ms,construction_alloc_bytes,attach_layout_ms,attach_layout_alloc_bytes,update_ms,update_alloc_bytes,command_dispatch_ms,command_dispatch_alloc_bytes,teardown_ms,teardown_alloc_bytes,dispatched_commands"
         };
 
         foreach (var sections in new[] { 2, 6, 18 })
@@ -39,7 +39,7 @@ internal static class WpfLifecycleMeasurements
             foreach (var implementation in new[] { "native", "gui" })
             {
                 // Exclude initial JIT/type initialization from the reported sample set.
-                for (var warmup = 0; warmup < 3; warmup++)
+                for (var warmup = 0; warmup < 5; warmup++)
                     _ = Measure(implementation == "gui", sections);
             }
 
@@ -57,11 +57,16 @@ internal static class WpfLifecycleMeasurements
                         implementation,
                         sections.ToString(CultureInfo.InvariantCulture),
                         sample.ToString(CultureInfo.InvariantCulture),
-                        Format(result.Construction),
-                        Format(result.AttachAndLayout),
-                        Format(result.Update),
-                        Format(result.CommandDispatch),
-                        Format(result.Teardown),
+                        Format(result.Construction.Elapsed),
+                        result.Construction.AllocatedBytes.ToString(CultureInfo.InvariantCulture),
+                        Format(result.AttachAndLayout.Elapsed),
+                        result.AttachAndLayout.AllocatedBytes.ToString(CultureInfo.InvariantCulture),
+                        Format(result.Update.Elapsed),
+                        result.Update.AllocatedBytes.ToString(CultureInfo.InvariantCulture),
+                        Format(result.CommandDispatch.Elapsed),
+                        result.CommandDispatch.AllocatedBytes.ToString(CultureInfo.InvariantCulture),
+                        Format(result.Teardown.Elapsed),
+                        result.Teardown.AllocatedBytes.ToString(CultureInfo.InvariantCulture),
                         result.DispatchedCommands.ToString(CultureInfo.InvariantCulture)));
                 }
             }
@@ -69,7 +74,7 @@ internal static class WpfLifecycleMeasurements
 
         File.WriteAllText(outputPath, string.Join(Environment.NewLine, rows) + Environment.NewLine, new UTF8Encoding(false));
         Console.WriteLine($"WPF lifecycle samples: {outputPath}");
-        Console.WriteLine($"Warmups per implementation/workload: 3; measured samples: {SamplesPerCase}; window visible: false; thread: {Thread.CurrentThread.GetApartmentState()}");
+        Console.WriteLine($"Warmups per implementation/workload: 5; measured samples: {SamplesPerCase}; window visible: false; thread: {Thread.CurrentThread.GetApartmentState()}");
         Console.WriteLine(string.Join(Environment.NewLine, rows));
         return 0;
     }
@@ -80,14 +85,14 @@ internal static class WpfLifecycleMeasurements
         Window? window = null;
         var dispatched = 0;
 
-        var construction = Time(() =>
+        var construction = MeasurePhase(() =>
         {
             content = useGui
                 ? WpfGuiRenderer.Render(CreateSemanticTree(sections), _ => dispatched++)
                 : BuildNativeTree(sections, () => dispatched++);
         });
 
-        var attachAndLayout = Time(() =>
+        var attachAndLayout = MeasurePhase(() =>
         {
             window = new Window
             {
@@ -107,14 +112,14 @@ internal static class WpfLifecycleMeasurements
             window.Dispatcher.Invoke(static () => { }, DispatcherPriority.ApplicationIdle);
         });
 
-        var update = Time(() =>
+        var update = MeasurePhase(() =>
         {
             var heading = GetHeading(content!);
             heading.Text = "Workshop dashboard updated";
             content!.UpdateLayout();
         });
 
-        var commandDispatch = Time(() =>
+        var commandDispatch = MeasurePhase(() =>
         {
             var button = GetFirstSaveButton(content!);
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
@@ -123,7 +128,7 @@ internal static class WpfLifecycleMeasurements
         if (dispatched != 1)
             throw new InvalidOperationException($"Expected exactly one command dispatch, observed {dispatched}.");
 
-        var teardown = Time(() =>
+        var teardown = MeasurePhase(() =>
         {
             window!.Content = null;
             window.Close();
@@ -134,11 +139,14 @@ internal static class WpfLifecycleMeasurements
         return new Measurement(construction, attachAndLayout, update, commandDispatch, teardown, dispatched);
     }
 
-    private static TimeSpan Time(Action action)
+    private static PhaseMeasurement MeasurePhase(Action action)
     {
+        var allocatedBefore = GC.GetAllocatedBytesForCurrentThread();
         var start = Stopwatch.GetTimestamp();
         action();
-        return Stopwatch.GetElapsedTime(start);
+        var elapsed = Stopwatch.GetElapsedTime(start);
+        var allocatedBytes = GC.GetAllocatedBytesForCurrentThread() - allocatedBefore;
+        return new PhaseMeasurement(elapsed, allocatedBytes);
     }
 
     private static string Format(TimeSpan value) =>
@@ -231,10 +239,12 @@ internal static class WpfLifecycleMeasurements
     }
 
     private sealed record Measurement(
-        TimeSpan Construction,
-        TimeSpan AttachAndLayout,
-        TimeSpan Update,
-        TimeSpan CommandDispatch,
-        TimeSpan Teardown,
+        PhaseMeasurement Construction,
+        PhaseMeasurement AttachAndLayout,
+        PhaseMeasurement Update,
+        PhaseMeasurement CommandDispatch,
+        PhaseMeasurement Teardown,
         int DispatchedCommands);
+
+    private sealed record PhaseMeasurement(TimeSpan Elapsed, long AllocatedBytes);
 }
