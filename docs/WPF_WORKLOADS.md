@@ -31,3 +31,13 @@ The BenchmarkDotNet construction harness returns the root element and does not a
 ## Result naming and boundaries
 
 BenchmarkDotNet methods remain NativeWpfConstruction and GuiWpfManifestation. Lifecycle CSV fields are construction_ms, attach_layout_ms, update_ms, command_dispatch_ms, and teardown_ms. These are independent phase timings, not a single end-to-end score. The lifecycle run uses an unshown window and synthetic routed event; it must not be described as visible UI rendering, physical input latency, or user-perceived responsiveness.
+
+## Running the lifecycle harness
+
+From the repository root, after checking out the GUI repository's `development` branch into the expected sibling folder:
+
+```powershell
+dotnet run --project src/WpfBench/TheSingularityWorkshop.Benchmarks.GUI.WpfBench.csproj --configuration Release -- --lifecycle
+```
+
+The command requires Windows and an STA-capable process. It writes `results/wpf/wpf-lifecycle.csv`; the workflow uploads this file as an artifact. The CSV contains raw per-sample phase timings. Summaries should be calculated from the retained samples, with the three warmups excluded.
