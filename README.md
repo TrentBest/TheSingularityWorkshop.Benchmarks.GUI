@@ -31,7 +31,7 @@ The workload specification defines node/control counts, nesting, content, proper
 - Blazor: distinguish component/render-tree work from browser layout, paint, and interaction. Browser-visible results require a real browser run; a render-tree-only microbenchmark is not an end-to-end Blazor UX result.
 - Both: report absolute measurements and GUI/native ratios, distributions, variance, allocations/memory where meaningful, and complete environment metadata.
 
-See [the measurement protocol](docs/MEASUREMENT_PROTOCOL.md) before adding or interpreting a benchmark.
+See [the measurement protocol](docs/MEASUREMENT_PROTOCOL.md), [WPF workload definition](docs/WPF_WORKLOADS.md), and [Blazor workload definition](docs/BLAZOR_WORKLOADS.md) before adding or interpreting a benchmark.
 
 ## Repository layout
 
@@ -47,6 +47,6 @@ No package publication is part of benchmark development. NuGet publication requi
 
 ## Current status
 
-**Methodology and first milestone are specified. Executable scenarios and measured baselines are not yet complete.** No performance conclusion should be drawn from this repository until reproducible runs and raw artifacts are available.
+**WPF and Blazor render-tree benchmark harnesses are now scaffolded**, with small/medium/large workload definitions and a Windows CI build. The first CI build is pending. Browser-visible Blazor measurements, WPF visible-host lifecycle measurements, and measured baselines are still outstanding. No performance conclusion should be drawn until reproducible runs and raw artifacts are available.
 
 Tracking: [Issue #1 — Establish user-facing WPF and Blazor performance baselines](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/issues/1).
