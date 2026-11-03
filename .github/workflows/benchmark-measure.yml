@@ -32,6 +32,8 @@ jobs:
           Get-Date -Format o | Out-File results/environment/captured-at.txt -Encoding utf8
       - name: Build WPF benchmark harness
         run: dotnet build src/WpfBench/TheSingularityWorkshop.Benchmarks.GUI.WpfBench.csproj --configuration Release
+      - name: Measure WPF host lifecycle and layout
+        run: dotnet run --project src/WpfBench/TheSingularityWorkshop.Benchmarks.GUI.WpfBench.csproj --configuration Release --no-build -- --lifecycle
       - name: Build Blazor render-tree benchmark harness
         run: dotnet build src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release
       - name: Measure WPF adapter construction
@@ -56,5 +58,6 @@ jobs:
             BenchmarkDotNet.Artifacts/**
             results/environment/**
             results/browser/**
+            results/wpf/**
           if-no-files-found: warn
           retention-days: 90
