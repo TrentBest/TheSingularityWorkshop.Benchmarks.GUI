@@ -98,15 +98,32 @@ internal static class Program
             }
         }
 
-        var outputDirectory = Path.Combine("results", "browser");
+        var expectedRows = samplesPerImplementation * 2;
+        if (results.Count != expectedRows ||
+            results.Count(item => item.Kind == "native") != samplesPerImplementation ||
+            results.Count(item => item.Kind == "gui") != samplesPerImplementation)
+        {
+            throw new InvalidOperationException($"Expected {expectedRows} paired browser samples (30 native + 30 GUI); captured {results.Count}.");
+        }
+
+        // dotnet run may set the app working directory to the project directory.
+        // Prefer the workflow workspace so the artifact upload path is deterministic.
+        var workspace = Environment.GetEnvironmentVariable("GITHUB_WORKSPACE");
+        var outputRoot = string.IsNullOrWhiteSpace(workspace) ? Directory.GetCurrentDirectory() : workspace;
+        var outputDirectory = Path.Combine(outputRoot, "results", "browser");
         Directory.CreateDirectory(outputDirectory);
-        var outputPath = Path.Combine(outputDirectory, "blazor-browser.csv");
+        var outputPath = Path.GetFullPath(Path.Combine(outputDirectory, "blazor-browser.csv"));
         var csv = new StringBuilder();
         csv.AppendLine("kind,sample,ttfb_ms,dom_content_loaded_ms,load_ms,layout_width,layout_height");
         foreach (var item in results)
             csv.AppendLine($"{item.Kind},{item.Sample},{item.Ttfb:F3},{item.DomContentLoaded:F3},{item.Load:F3},{item.LayoutWidth:F1},{item.LayoutHeight:F1}");
-        await File.WriteAllTextAsync(outputPath, csv.ToString(), new System.Text.UTF8Encoding(false));
-        Console.WriteLine($"Browser comparison samples written: {outputPath} ({samplesPerImplementation} per implementation; paired alternating order).");
+        await File.WriteAllTextAsync(outputPath, csv.ToString(), new UTF8Encoding(false));
+
+        var fileInfo = new FileInfo(outputPath);
+        if (!fileInfo.Exists || fileInfo.Length == 0)
+            throw new IOException($"Browser comparison output was not created or is empty: {outputPath}");
+
+        Console.WriteLine($"Browser comparison samples written: {outputPath} ({results.Count} rows; 30 per implementation; paired alternating order; {fileInfo.Length} bytes).");
         Console.WriteLine("Scope: loopback HTTP + server-side static HTML rendering + browser parsing/layout; not interactive Blazor startup, event latency, or physical paint.");
     }
 
