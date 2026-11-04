@@ -43,8 +43,22 @@ jobs:
       - name: Capture browser comparison
         shell: pwsh
         run: |
-          New-Item -ItemType Directory -Force -Path results/browser | Out-Null
+          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE/results/browser" | Out-Null
           dotnet run --project src/BlazorBrowserBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBrowserBench.csproj --configuration Release --no-build
+          $csvPath = Join-Path $env:GITHUB_WORKSPACE "results/browser/blazor-browser.csv"
+          if (-not (Test-Path -LiteralPath $csvPath -PathType Leaf)) {
+            throw "Browser comparison CSV was not created at expected artifact path: $csvPath"
+          }
+          $rows = @(Import-Csv -LiteralPath $csvPath)
+          if ($rows.Count -ne 60) {
+            throw "Expected 60 browser comparison rows (30 native + 30 GUI), found $($rows.Count)."
+          }
+          $nativeRows = @($rows | Where-Object { $_.kind -eq "native" }).Count
+          $guiRows = @($rows | Where-Object { $_.kind -eq "gui" }).Count
+          if ($nativeRows -ne 30 -or $guiRows -ne 30) {
+            throw "Expected 30 native and 30 GUI rows; found native=$nativeRows gui=$guiRows."
+          }
+          Get-Item -LiteralPath $csvPath | Select-Object FullName, Length | Format-List
       - name: Measure Blazor render-tree construction
         run: dotnet run --project src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release --no-build -- --filter "*BlazorRenderTreeBenchmarks*"
       - name: Upload measured results and environment
