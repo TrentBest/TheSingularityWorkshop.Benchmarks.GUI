@@ -47,7 +47,7 @@ No package publication is part of benchmark development. NuGet publication requi
 
 ## Repository governance
 
-The live Sith Policy README badge is under design. See [the badge architecture and SVG prototypes](docs/SITH_POLICY_BADGE_DESIGN.md) and [Issue #2](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/issues/2). The SVG samples are visual concepts only; the live badge is not enabled until branch enumeration and refresh behavior are implemented and verified.
+[![Sith Policy](assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/sith-policy.yml)
 
 ## Current status
 
