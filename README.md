@@ -57,8 +57,8 @@ The browser-hosted GUI/native Blazor static-rendering comparison uses Playwright
 
 ### Latest measured findings
 
-[GUI Adapter Benchmark Findings — 2026-11-05](docs/ADAPTER_FINDINGS_2026-11-05.md) documents the verified hosted run, explains how to interpret the numbers, and includes an LLM/engineering handoff. Its standout result is the 18-section Blazor render-tree workload: 9.278 μs for GUI versus 10.821 μs native (about 14.3% less time in this run), with higher GUI allocations. The report also explains the workload-specific nature of the result and its measurement limits.
+[GUI Adapter Benchmark Findings — run 42001741506](docs/ADAPTER_FINDINGS_2026-11-05_RUN_42001741506.md) documents the latest complete hosted capture, including 30-sample WPF lifecycle measurements, Blazor render-tree distributions, environment details, and the validated 60-row browser artifact. In this run, the 18-section Blazor render-tree mean was 8.213 μs GUI versus 9.344 μs native (about 12.1% less time), with higher GUI allocations. The report explicitly distinguishes the new run from earlier browser results and avoids carrying forward stale medians.
 
-[Initial GUI Adapter Findings — 2026-11-04](docs/INITIAL_ADAPTER_FINDINGS_2026-11-04.md) remains as historical evidence from the first run.
+[Earlier GUI Adapter Findings — 2026-11-05](docs/ADAPTER_FINDINGS_2026-11-05.md) and [Initial GUI Adapter Findings — 2026-11-04](docs/INITIAL_ADAPTER_FINDINGS_2026-11-04.md) remain as historical evidence.
 
 Tracking: [Issue #1 — Establish user-facing WPF and Blazor performance baselines](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/issues/1).
