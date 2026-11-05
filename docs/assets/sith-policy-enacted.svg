@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="248" height="32" viewBox="0 0 248 32" role="img" aria-labelledby="title desc">
+  <title id="title">Sith Policy Enacted</title>
+  <desc id="desc">The repository has exactly two branches: master and development.</desc>
+  <defs>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#343a40"/><stop offset="1" stop-color="#171a1e"/></linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8f111b"/><stop offset="1" stop-color="#e13b42"/></linearGradient>
+  </defs>
+  <path d="M5 1H243L247 5V27L243 31H5L1 27V5Z" fill="url(#steel)" stroke="#aab0b7" stroke-width="1"/>
+  <path d="M2 5L6 2H10V30H6L2 27Z" fill="url(#red)"/>
+  <path d="M18 8L23 12L18 16L23 20L18 24" fill="none" stroke="#f0c36a" stroke-width="1.8" stroke-linecap="square"/>
+  <text x="32" y="13" fill="#c6cbd1" font-family="Arial,sans-serif" font-size="8" font-weight="700" letter-spacing="1.15">SITH POLICY</text>
+  <text x="32" y="24" fill="#f4f5f6" font-family="Arial,sans-serif" font-size="10" font-weight="800" letter-spacing=".55">ENACTED</text>
+  <rect x="164" y="7" width="73" height="18" rx="3" fill="#183c2b" stroke="#4ca875"/>
+  <circle cx="174" cy="16" r="3" fill="#69d69a"/>
+  <text x="181" y="19" fill="#a8f0c4" font-family="Arial,sans-serif" font-size="8" font-weight="700" letter-spacing=".4">2 BRANCHES</text>
+</svg>
