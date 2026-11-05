@@ -45,6 +45,10 @@ The benchmark suite consumes the GUI repository from its **development** branch 
 
 No package publication is part of benchmark development. NuGet publication requires explicit authorization.
 
+## Repository governance
+
+The live Sith Policy README badge is under design. See [the badge architecture and SVG prototypes](docs/SITH_POLICY_BADGE_DESIGN.md) and [Issue #2](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/issues/2). The SVG samples are visual concepts only; the live badge is not enabled until branch enumeration and refresh behavior are implemented and verified.
+
 ## Current status
 
 **The Blazor render-tree harness builds and passes BenchmarkDotNet Dry smoke runs on Windows CI. WPF uses its dedicated STA lifecycle harness rather than BenchmarkDotNet because the latter's MTA worker model is incompatible with WPF control creation.** The workflow also uploads the smoke-run artifacts for inspection. These Dry jobs verify that the benchmark cases execute; their timings are not performance evidence and must not be reported as baselines.
