@@ -1,4 +1,15 @@
+<p align="center">
+  <a href="https://github.com/TrentBest/TheSingularityWorkshop.Visualize">
+    <img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop" width="720" />
+  </a>
+</p>
+
 # The Singularity Workshop — GUI Benchmarks
+
+[![Benchmark harness](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/benchmark-build.yml/badge.svg?branch=development)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/benchmark-build.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/development)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/commits/development)
+
 
 This repository establishes reproducible performance evidence for the GUI adapters developers actually use.
 
@@ -62,3 +73,5 @@ The browser-hosted GUI/native Blazor static-rendering comparison uses Playwright
 [Earlier GUI Adapter Findings — 2026-11-05](docs/ADAPTER_FINDINGS_2026-11-05.md) and [Initial GUI Adapter Findings — 2026-11-04](docs/INITIAL_ADAPTER_FINDINGS_2026-11-04.md) remain as historical evidence.
 
 Tracking: [Issue #1 — Establish user-facing WPF and Blazor performance baselines](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/issues/1).
+
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop" width="200" /></p>
