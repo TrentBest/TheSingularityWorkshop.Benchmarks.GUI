@@ -42,3 +42,13 @@ dotnet run --project src/WpfBench/TheSingularityWorkshop.Benchmarks.GUI.WpfBench
 ```
 
 The command requires Windows and an STA-capable process. It writes `results/wpf/wpf-lifecycle.csv`; the workflow uploads this file as an artifact. The CSV contains raw per-sample phase timings. Summaries should be calculated from the retained samples, with the five warmups excluded.
+
+## Diagnostic pipeline decomposition
+
+The STA runner also writes \`results/wpf/wpf-pipeline-diagnostics.csv\`. This diagnostic isolates the exact private production methods used by the public GUI renderer:
+
+- **Validation only** invokes \`WpfGuiRenderer.ValidateTree(GuiNode)\`.
+- **Materialization only** invokes \`WpfGuiRenderer.RenderValidated(GuiNode, Action<string>?)\` and retains the resulting FrameworkElement tree beyond the timed region.
+- The semantic GuiNode tree is constructed before either measurement, so its construction cost is excluded from both diagnostic phases. The existing lifecycle \`construction\` measurement remains unchanged and continues to represent the complete public \`WpfGuiRenderer.Render\` call, including semantic-tree construction, validation, and materialization.
+
+The private production methods are bound to typed delegates once before measurement; reflection is not timed, and no validator or renderer implementation is copied into the benchmark. A missing or changed private method signature fails the diagnostic rather than silently measuring a substitute. Each workload size receives five warmups and 30 measured samples, with validation/materialization order alternated per sample. Timing and current-thread managed allocation deltas are recorded independently. These GUI-only diagnostics explain the internal pipeline; they are not a native-versus-GUI comparison and must not be added together as an end-to-end score.
