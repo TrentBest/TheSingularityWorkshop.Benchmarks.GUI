@@ -73,10 +73,83 @@ internal static class WpfLifecycleMeasurements
         }
 
         File.WriteAllText(outputPath, string.Join(Environment.NewLine, rows) + Environment.NewLine, new UTF8Encoding(false));
+        RunPipelineDiagnostics(outputDirectory);
+
         Console.WriteLine($"WPF lifecycle samples: {outputPath}");
         Console.WriteLine($"Warmups per implementation/workload: 5; measured samples: {SamplesPerCase}; window visible: false; thread: {Thread.CurrentThread.GetApartmentState()}");
         Console.WriteLine(string.Join(Environment.NewLine, rows));
         return 0;
+    }
+
+
+    private static void RunPipelineDiagnostics(string outputDirectory)
+    {
+        var renderer = typeof(WpfGuiRenderer);
+        var validateMethod = renderer.GetMethod(
+            "ValidateTree",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+            ?? throw new InvalidOperationException("WpfGuiRenderer.ValidateTree was not found.");
+        var materializeMethod = renderer.GetMethod(
+            "RenderValidated",
+            System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+            ?? throw new InvalidOperationException("WpfGuiRenderer.RenderValidated was not found.");
+
+        // Bind exact production methods once, outside all measured regions.
+        Action<GuiNode> validate = validateMethod.CreateDelegate<Action<GuiNode>>();
+        Func<GuiNode, Action<string>?, FrameworkElement> materialize =
+            materializeMethod.CreateDelegate<Func<GuiNode, Action<string>?, FrameworkElement>>();
+
+        var rows = new List<string>
+        {
+            "implementation,sections,sample,validation_ms,validation_alloc_bytes,materialization_ms,materialization_alloc_bytes"
+        };
+
+        foreach (var sections in new[] { 2, 6, 18 })
+        {
+            for (var warmup = 0; warmup < 5; warmup++)
+            {
+                var warmupTree = CreateSemanticTree(sections);
+                validate(warmupTree);
+                _ = materialize(warmupTree, static _ => { });
+            }
+
+            for (var sample = 1; sample <= SamplesPerCase; sample++)
+            {
+                // Tree construction is deliberately outside both diagnostic phases.
+                var tree = CreateSemanticTree(sections);
+                PhaseMeasurement validation;
+                PhaseMeasurement materialization;
+                FrameworkElement? rendered = null;
+
+                if (sample % 2 == 1)
+                {
+                    validation = MeasurePhase(() => validate(tree));
+                    materialization = MeasurePhase(() => rendered = materialize(tree, static _ => { }));
+                }
+                else
+                {
+                    materialization = MeasurePhase(() => rendered = materialize(tree, static _ => { }));
+                    validation = MeasurePhase(() => validate(tree));
+                }
+
+                rows.Add(string.Join(",",
+                    "gui",
+                    sections.ToString(CultureInfo.InvariantCulture),
+                    sample.ToString(CultureInfo.InvariantCulture),
+                    Format(validation.Elapsed),
+                    validation.AllocatedBytes.ToString(CultureInfo.InvariantCulture),
+                    Format(materialization.Elapsed),
+                    materialization.AllocatedBytes.ToString(CultureInfo.InvariantCulture)));
+
+                GC.KeepAlive(rendered);
+            }
+        }
+
+        var outputPath = Path.Combine(outputDirectory, "wpf-pipeline-diagnostics.csv");
+        File.WriteAllText(outputPath, string.Join(Environment.NewLine, rows) + Environment.NewLine, new UTF8Encoding(false));
+        Console.WriteLine("WPF pipeline diagnostics: " + outputPath);
+        Console.WriteLine("Diagnostic warmups per phase/workload: 5; measured samples: " + SamplesPerCase + "; thread: " + Thread.CurrentThread.GetApartmentState());
+        Console.WriteLine(string.Join(Environment.NewLine, rows));
     }
 
     private static Measurement Measure(bool useGui, int sections)
