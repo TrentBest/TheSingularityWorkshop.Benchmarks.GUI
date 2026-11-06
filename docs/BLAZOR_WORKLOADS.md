@@ -23,6 +23,17 @@ The browser harness currently exercises the large workload (18 sections, 74 sema
 
 Each section contains a heading, button, and notice. The root is a Panel containing a dashboard heading and section panels. Native and semantic versions are intended to emit matching HTML element types, IDs, and visible text.
 
+## Diagnostic pipeline decomposition
+
+`BlazorPipelineDiagnostics` adds four diagnostic cases for each workload size:
+
+- **Validation only** invokes the exact private production `ValidateUniqueIds` method.
+- **Fragment creation only** creates the same lazy fragment shape using the exact production `RenderNode` method.
+- **Fragment execution only** invokes a prepared fragment with a fresh `RenderTreeBuilder`, isolating traversal and frame emission from validation and fragment allocation.
+- **Full public pipeline** calls `BlazorGuiRenderer.Render` and invokes the returned fragment, preserving the public entry-point boundary.
+
+The private production methods are bound to strongly typed delegates in `GlobalSetup`; reflection is not performed in measured operations. Setup fails if those private method contracts change. This deliberately avoids copying the validator or renderer into benchmark code. The diagnostic cases complement the native-versus-GUI public benchmark and should not be treated as a native comparison.
+
 ## Measurement boundaries and limitations
 
 The .NET benchmark includes the adapter entry operation, fresh RenderTreeBuilder allocation, and fragment invocation. Semantic-tree creation is in GlobalSetup and excluded. Results must be labeled **.NET render-tree construction**.
