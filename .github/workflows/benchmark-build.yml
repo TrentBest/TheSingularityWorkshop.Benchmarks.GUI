@@ -38,7 +38,9 @@ jobs:
         run: pwsh src/BlazorBrowserBench/bin/Release/net8.0/playwright.ps1 install chromium
       - name: Smoke-run browser-hosted Blazor comparison
         run: dotnet run --project src/BlazorBrowserBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBrowserBench.csproj --configuration Release --no-build
-      - name: Smoke-run Blazor benchmarks (Dry job)
+      - name: Smoke-run Blazor pipeline diagnostics (Dry job)
+        run: dotnet run --project src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release --no-build -- --filter "*BlazorPipelineDiagnostics*" --job Dry
+      - name: Smoke-run Blazor render-tree benchmarks (Dry job)
         run: dotnet run --project src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release --no-build -- --filter "*BlazorRenderTreeBenchmarks*" --job Dry
       - name: Upload smoke-run artifacts
         if: always()
