@@ -27,6 +27,9 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path results/environment | Out-Null
+          "benchmark_commit=$(git rev-parse HEAD)" | Out-File results/environment/revisions.txt -Encoding utf8
+          "gui_source_commit=$(git -C TheSingularityWorkshop.GUI rev-parse HEAD)" | Out-File results/environment/revisions.txt -Append -Encoding utf8
+          "captured_at_utc=$(Get-Date -Format o)" | Out-File results/environment/revisions.txt -Append -Encoding utf8
           dotnet --info | Out-File results/environment/dotnet-info.txt -Encoding utf8
           Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion, OsBuildNumber, CsSystemType, CsProcessorName, CsNumberOfLogicalProcessors, CsTotalPhysicalMemory | Format-List | Out-File results/environment/host.txt -Encoding utf8
           Get-Date -Format o | Out-File results/environment/captured-at.txt -Encoding utf8
