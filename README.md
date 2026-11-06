@@ -9,6 +9,7 @@
 [![Benchmark harness](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/benchmark-build.yml/badge.svg?branch=development)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/benchmark-build.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/development)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/commits/development)
+[![Sith Policy](assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/sith-policy.yml)
 
 
 This repository establishes reproducible performance evidence for the GUI adapters developers actually use.
@@ -58,7 +59,7 @@ No package publication is part of benchmark development. NuGet publication requi
 
 ## Repository governance
 
-[![Sith Policy](assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.Benchmarks.GUI/actions/workflows/sith-policy.yml)
+The permanent branch policy is evaluated by the Sith Policy workflow.
 
 ## Current status
 
