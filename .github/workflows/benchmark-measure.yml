@@ -60,7 +60,7 @@ jobs:
           }
           Get-Item -LiteralPath $csvPath | Select-Object FullName, Length | Format-List
       - name: Measure Blazor render-tree construction
-        run: dotnet run --project src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release --no-build -- --filter "*BlazorRenderTreeBenchmarks*"
+        run: dotnet run --project src/BlazorBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBench.csproj --configuration Release --no-build -- --filter "*Blazor*"
       - name: Upload measured results and environment
         if: always()
         uses: actions/upload-artifact@v4
