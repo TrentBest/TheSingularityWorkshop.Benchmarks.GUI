@@ -25,7 +25,7 @@ jobs:
       - name: Set up .NET 8
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
       - name: Build WPF benchmark harness
         run: dotnet build src/WpfBench/TheSingularityWorkshop.Benchmarks.GUI.WpfBench.csproj --configuration Release
       - name: Smoke-run WPF lifecycle measurements (STA host/layout)
@@ -35,7 +35,7 @@ jobs:
       - name: Build browser-hosted Blazor comparison
         run: dotnet build src/BlazorBrowserBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBrowserBench.csproj --configuration Release
       - name: Install Playwright Chromium
-        run: pwsh src/BlazorBrowserBench/bin/Release/net8.0/playwright.ps1 install chromium
+        run: pwsh src/BlazorBrowserBench/bin/Release/net10.0/playwright.ps1 install chromium
       - name: Smoke-run browser-hosted Blazor comparison
         run: dotnet run --project src/BlazorBrowserBench/TheSingularityWorkshop.Benchmarks.GUI.BlazorBrowserBench.csproj --configuration Release --no-build
       - name: Smoke-run Blazor pipeline diagnostics (Dry job)
