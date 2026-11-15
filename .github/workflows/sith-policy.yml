@@ -160,7 +160,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           event_deleted="$(jq -r '.deleted // false' "$GITHUB_EVENT_PATH")"
-          if [[ "$GITHUB_REF" == "refs/heads/$DEFAULT_BRANCH" || "$GITHUB_REF" == "refs/heads/development" || "$GITHUB_EVENT_NAME" == "delete" || "$event_deleted" == "true" ]]; then
+          if [[ "$GITHUB_REF" == "refs/heads/$DEFAULT_BRANCH" || "$GITHUB_EVENT_NAME" == "delete" || "$event_deleted" == "true" ]]; then
             target_branch="$DEFAULT_BRANCH"
             if [[ "$GITHUB_EVENT_NAME" != "delete" && "$event_deleted" != "true" && "$GITHUB_REF" == "refs/heads/development" ]]; then
               target_branch="development"
