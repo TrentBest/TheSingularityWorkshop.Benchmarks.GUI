@@ -2,6 +2,11 @@ name: Measure GUI adapter baselines
 
 on:
   workflow_dispatch:
+  # Re-run the full capture only when this measurement protocol itself changes.
+  push:
+    branches: [development]
+    paths:
+      - '.github/workflows/benchmark-measure.yml'
 
 permissions:
   contents: read
@@ -19,7 +24,7 @@ jobs:
           repository: TrentBest/TheSingularityWorkshop.GUI
           ref: development
           path: TheSingularityWorkshop.GUI
-      - name: Set up .NET 8
+      - name: Set up .NET 10
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 10.0.x
